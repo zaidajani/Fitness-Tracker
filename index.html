@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Move — Fitness Activity Tracker</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <header class="top">
+      <div class="topin">
+        <div class="brand">
+          <span class="mark">✳</span> move<span
+            style="color: #b5beb7; font-weight: 400"
+          >
+            / tracker</span
+          >
+        </div>
+        <div class="topright">FITNESS ACTIVITY & WORKOUT TRACKER</div>
+      </div>
+    </header>
+    <main class="layout">
+      <div class="intro">
+        <div>
+          <div class="eyebrow">YOUR MOVEMENT JOURNAL</div>
+          <h1>Every move<br /><em>adds up.</em></h1>
+          <p>A clearer picture of the little things you do every day.</p>
+        </div>
+        <div class="actions">
+          <button class="btn" id="importBtn">↑ Import CSV</button
+          ><button class="btn" id="exportBtn">↓ Export CSV</button
+          ><button class="btn primary" id="addBtn">＋ Add activity</button
+          ><input type="file" accept=".csv,text/csv" id="file" hidden />
+        </div>
+      </div>
+      <div class="notice">
+        <span id="noticeText"
+          >✳ &nbsp; You're viewing 120 sample activities. Add your own or import
+          a CSV to get started.</span
+        ><button id="clearBtn">Clear all records</button>
+      </div>
+      <section class="today card">
+        <div class="today-copy">
+          <div class="eyebrow">YOUR ACTIVITY SNAPSHOT</div>
+          <h2>Keep your<br />momentum going.</h2>
+          <p id="snapshotText">A little movement goes a long way.</p>
+          <button class="snapshot-action" id="snapshotAdd">
+            Log an activity <span>↗</span>
+          </button>
+        </div>
+        <div class="snapshot-visual">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="orbit orbit-three"></div>
+          <div class="snapshot-center">
+            <span id="snapshotCount">0</span><small>SESSIONS</small>
+          </div>
+          <span class="snapshot-caption">YOUR MOVEMENT<br />AT A GLANCE</span>
+        </div>
+      </section>
+      <div class="stats" id="stats"></div>
+      <div class="sectionhead">
+        <div>
+          <div class="eyebrow">THE BIG PICTURE</div>
+          <h2>Find your rhythm.</h2>
+          <p>See how your movement comes together over time.</p>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="card panel">
+          <h3>Daily activity</h3>
+          <p>Total recorded steps over the last 14 days in your data</p>
+          <div class="chart">
+            <canvas
+              id="line"
+              role="img"
+              aria-label="Line chart of daily recorded steps"
+            ></canvas>
+          </div>
+        </article>
+        <article class="card panel">
+          <h3>Average workout duration</h3>
+          <p>Minutes per session, by activity</p>
+          <div class="chart">
+            <canvas
+              id="bars"
+              role="img"
+              aria-label="Bar chart of average workout duration by activity"
+            ></canvas>
+          </div>
+        </article>
+      </div>
+      <div class="bottomgrid">
+        <article class="card panel">
+          <h3>Activity breakdown</h3>
+          <p>Share of your recorded sessions</p>
+          <div class="donutwrap">
+            <div class="donut">
+              <canvas
+                id="donut"
+                role="img"
+                aria-label="Doughnut chart of activity types"
+              ></canvas>
+              <div class="donutcenter" id="donutcenter"></div>
+            </div>
+            <div class="legend" id="legend"></div>
+          </div>
+        </article>
+        <article class="card panel">
+          <h3>Your highlights</h3>
+          <p>Insights based on your recorded activities</p>
+          <div class="insights" id="insights"></div>
+        </article>
+      </div>
+      <details class="history card">
+        <summary class="history-summary">
+          <span
+            ><strong>Activity history</strong
+            ><small>View your recorded workouts</small></span
+          ><span class="history-toggle" aria-hidden="true"></span>
+        </summary>
+        <div class="history-content">
+          <div class="history-controls">
+            <select class="filter" id="filter" aria-label="Filter activity">
+              <option value="">All activities</option>
+            </select>
+          </div>
+          <div class="tablewrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Activity</th>
+                  <th>Duration</th>
+                  <th>Steps</th>
+                  <th>Calories</th>
+                  <th>Heart rate</th>
+                  <th>Distance</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+            <div class="empty" id="empty" hidden>
+              No activities yet. Add a workout or import a CSV.
+            </div>
+          </div>
+        </div>
+      </details>
+      <div class="footer">
+        <span>Made for the Fitness Activity & Workout Tracker project</span
+        ><span>Data stays in this browser · Calories are estimates</span>
+      </div>
+    </main>
+    <div class="modal" id="modal">
+      <div
+        class="dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dialogTitle"
+      >
+        <h2 id="dialogTitle">Add an activity</h2>
+        <p>Record a session to see your dashboard update.</p>
+        <form id="form">
+          <div class="formgrid">
+            <label>Date<input type="date" name="date" required /></label
+            ><label
+              >Activity<input
+                name="activity"
+                list="types"
+                maxlength="40"
+                required
+                placeholder="e.g. Walking"
+              /><datalist id="types">
+                <option>Walking</option>
+                <option>Running</option>
+                <option>Cycling</option>
+                <option>Gym</option>
+                <option>Yoga</option>
+              </datalist></label
+            ><label
+              >Duration (minutes)<input
+                name="duration"
+                type="number"
+                min="1"
+                max="1440"
+                required /></label
+            ><label
+              >Steps<input
+                name="steps"
+                type="number"
+                min="0"
+                max="1000000"
+                required /></label
+            ><label
+              >Calories burned (kcal)<input
+                name="calories"
+                type="number"
+                min="0"
+                max="100000"
+                required /></label
+            ><label
+              >Heart rate (bpm, optional)<input
+                name="heartRate"
+                type="number"
+                min="1"
+                max="300" /></label
+            ><label
+              >Distance (km, optional)<input
+                name="distance"
+                type="number"
+                min="0"
+                max="10000"
+                step="0.01"
+            /></label>
+          </div>
+          <div class="error" id="error"></div>
+          <div class="formactions">
+            <button class="btn" type="button" id="cancel">Cancel</button
+            ><button class="btn primary" type="submit">Save activity</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
